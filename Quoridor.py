@@ -30,41 +30,7 @@ class Map:
                     movement[1] = False
                     cur_grid_square.set_movement(movement)
 
-    def render(self):
-        for r in range(self.size):
-            #print upper border
-            if r == 0:
-                print(' ', end='')
-                for c in range(self.size):
-                    print('- ', end='')
-                print()
-            if r >= 0:
-                #vertical bars |
-                #movement left and right
-                for c in range(self.size):
-                    cg_movement = self.grid[r][c].movement
-                    if c == 0:
-                        print('|', end='')
-                    if self.grid[r][c].contains_player == True:
-                        print('O', end='')
-                    else:
-                        print('*', end='')
-                    if cg_movement[1] == True: #movement to the right
-                        print(' ', end='')
-                    elif cg_movement[1] == False:
-                        print('|', end='')
-                print()
-                for c in range(self.size):
-                    #cross bars
-                    #vertical movement
-                    cg_movement = self.grid[r][c].movement
-                    if cg_movement[2] == False:
-                        print(' -', end='')
-                    else:
-                        print('  ', end='')
-                    if c == (self.size - 1):
-                        print()
-        print()
+
 
     def update_movement(self, r, c, movement):
         self.grid[r][c].movement = movement
@@ -116,11 +82,11 @@ class Player:
 #implement game engine loop
 class Game:
     def __init__(self):
-        self.simple_map = Map(8)
+        self.map = Map(8)
         self.p1 = Player([3,5])
         self.p2 = Player([2,2])
-        self.simple_map.grid[self.p1.location[0]][self.p1.location[1]].contains_player = True
-        self.simple_map.grid[self.p2.location[0]][self.p2.location[1]].contains_player = True
+        self.map.grid[self.p1.location[0]][self.p1.location[1]].contains_player = True
+        self.map.grid[self.p2.location[0]][self.p2.location[1]].contains_player = True
 
     def move_player(self, player, direction):
         r,c = player.location
@@ -130,35 +96,71 @@ class Game:
             location[0] = location[0] - 1
             player.location = location
             #update grid square information
-            self.simple_map.grid[r][c].contains_player = False
-            self.simple_map.grid[r - 1][c].contains_player = True
+            self.map.grid[r][c].contains_player = False
+            self.map.grid[r - 1][c].contains_player = True
         if direction == 'd':
             #move player right
             location = player.location
             location[1] = location[1] + 1
             player.location = location
             #update grid square information
-            self.simple_map.grid[r][c].contains_player = False
-            self.simple_map.grid[r][c + 1].contains_player = True
+            self.map.grid[r][c].contains_player = False
+            self.map.grid[r][c + 1].contains_player = True
         if direction == 's':
             #move player down
             location = player.location
             location[0] = location[0] + 1
             player.location = location
             #update grid square information
-            self.simple_map.grid[r][c].contains_player = False
-            self.simple_map.grid[r + 1][c].contains_player = True
+            self.map.grid[r][c].contains_player = False
+            self.map.grid[r + 1][c].contains_player = True
         if direction == 'a':
             #move player left
             location = player.location
             location[1] = location[1] - 1
             player.location = location
             #update grid square information
-            self.simple_map.grid[r][c].contains_player = False
-            self.simple_map.grid[r][c - 1].contains_player = True
+            self.map.grid[r][c].contains_player = False
+            self.map.grid[r][c - 1].contains_player = True
+
+    def render(self):
+        for r in range(self.map.size):
+            #print upper border
+            if r == 0:
+                print(' ', end='')
+                for c in range(self.map.size):
+                    print('- ', end='')
+                print()
+            if r >= 0:
+                #vertical bars |
+                #movement left and right
+                for c in range(self.map.size):
+                    cg_movement = self.map.grid[r][c].movement
+                    if c == 0:
+                        print('|', end='')
+                    if self.map.grid[r][c].contains_player == True:
+                        print('O', end='')
+                    else:
+                        print('*', end='')
+                    if cg_movement[1] == True: #movement to the right
+                        print(' ', end='')
+                    elif cg_movement[1] == False:
+                        print('|', end='')
+                print()
+                for c in range(self.map.size):
+                    #cross bars
+                    #vertical movement
+                    cg_movement = self.map.grid[r][c].movement
+                    if cg_movement[2] == False:
+                        print(' -', end='')
+                    else:
+                        print('  ', end='')
+                    if c == (self.map.size - 1):
+                        print()
+        print()
 
     def start_game(self):
-        self.simple_map.render()
+        self.render()
         turn = 0
         while(1):
             if(turn == 0):
@@ -167,8 +169,7 @@ class Game:
             else:
                 curr_player = self.p2
                 print('player 2 turn')
-            #until valid action taken
-                #prompt for valid input
+
             action_taken_valid = False
             while not action_taken_valid:
                 a = input()
@@ -176,7 +177,7 @@ class Game:
                     if a not in 'wasd':
                         continue
                     r,c = curr_player.location
-                    possible_moves = self.simple_map.grid[r][c].movement
+                    possible_moves = self.map.grid[r][c].movement
                     if a == 'w' and possible_moves[0]:
                         self.move_player(curr_player, 'w')
                         action_taken_valid = True
@@ -191,7 +192,7 @@ class Game:
                         action_taken_valid = True
 
 
-            self.simple_map.render()
+            self.render()
 
 new_game = Game()
 new_game.start_game()
