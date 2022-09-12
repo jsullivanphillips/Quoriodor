@@ -1,10 +1,4 @@
-
-class GridSquare:
-    def __init__(self):
-        self.movement = [True, True, True, True]
-        self.contains_player = False
-    def set_movement(self, movement):
-        self.movement = movement
+from GridSquare import GridSquare
 
 class Map:
     def __init__(self, size):
@@ -70,11 +64,3 @@ class Map:
                 temp_movement[1] = False
                 #push update to left gs
                 self.grid[r][c-1].set_movement(temp_movement)
-
-
-
-
-#implement player
-class Player:
-    def __init__(self, location):
-        self.location = location
