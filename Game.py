@@ -1,6 +1,7 @@
 from Player import Player
 from Map import Map
 import sys
+from RenderEngine import render
 class Game:
     def __init__(self):
         self.map = Map(8)
@@ -43,41 +44,7 @@ class Game:
             self.map.grid[r][c].contains_player = False
             self.map.grid[r][c - 1].contains_player = True
 
-    def render(self):
-        for r in range(self.map.size):
-            #print upper border
-            if r == 0:
-                print(' ', end='')
-                for c in range(self.map.size):
-                    print('- ', end='')
-                print()
-            if r >= 0:
-                #vertical bars |
-                #movement left and right
-                for c in range(self.map.size):
-                    cg_movement = self.map.grid[r][c].movement
-                    if c == 0:
-                        print('|', end='')
-                    if self.map.grid[r][c].contains_player == True:
-                        print('O', end='')
-                    else:
-                        print('*', end='')
-                    if cg_movement[1] == True: #movement to the right
-                        print(' ', end='')
-                    elif cg_movement[1] == False:
-                        print('|', end='')
-                print()
-                for c in range(self.map.size):
-                    #cross bars
-                    #vertical movement
-                    cg_movement = self.map.grid[r][c].movement
-                    if cg_movement[2] == False:
-                        print(' -', end='')
-                    else:
-                        print('  ', end='')
-                    if c == (self.map.size - 1):
-                        print()
-        print()
+
 
     def setup_game(self):
         print("Player 1, which collumn would you like to start in? 0 - %d" % (self.map.size - 1))
@@ -110,7 +77,7 @@ class Game:
         self.map.grid[self.p1.location[0]][self.p1.location[1]].contains_player = True
         self.map.grid[self.p2.location[0]][self.p2.location[1]].contains_player = True
     def start_game(self):
-        self.render()
+        render(self.map)
         turn = 0
         while(1):
             if(turn%2 == 0):
@@ -146,7 +113,7 @@ class Game:
                     sys.exit()
 
 
-            self.render()
+            render(self.map)
 
 new_game = Game()
 new_game.setup_game()
