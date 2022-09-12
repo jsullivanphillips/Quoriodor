@@ -2,8 +2,7 @@
 class GridSquare:
     def __init__(self):
         self.movement = [True, True, True, True]
-    def __str__(self):
-        return 'I'
+        self.contains_player = False
     def set_movement(self, movement):
         self.movement = movement
 
@@ -37,7 +36,7 @@ class Map:
             if r == 0:
                 print(' ', end='')
                 for c in range(self.size):
-                    print('= ', end='')
+                    print('- ', end='')
                 print()
             if r >= 0:
                 #vertical bars |
@@ -46,19 +45,23 @@ class Map:
                     cg_movement = self.grid[r][c].movement
                     if c == 0:
                         print('|', end='')
-                    if cg_movement[1] == True:
-                        print(' :', end='')
+                    if self.grid[r][c].contains_player == True:
+                        print('O', end='')
+                    else:
+                        print('*', end='')
+                    if cg_movement[1] == True: #movement to the right
+                        print(' ', end='')
                     elif cg_movement[1] == False:
-                        print(' |', end='')
+                        print('|', end='')
                 print()
                 for c in range(self.size):
                     #cross bars
                     #vertical movement
                     cg_movement = self.grid[r][c].movement
                     if cg_movement[2] == False:
-                        print(' =', end='')
-                    else:
                         print(' -', end='')
+                    else:
+                        print('  ', end='')
                     if c == (self.size - 1):
                         print()
         print()
@@ -105,23 +108,90 @@ class Map:
 
 
 
+#implement player
+class Player:
+    def __init__(self, location):
+        self.location = location
+
+#implement game engine loop
+class Game:
+    def __init__(self):
+        self.simple_map = Map(8)
+        self.p1 = Player([3,5])
+        self.p2 = Player([2,2])
+        self.simple_map.grid[self.p1.location[0]][self.p1.location[1]].contains_player = True
+        self.simple_map.grid[self.p2.location[0]][self.p2.location[1]].contains_player = True
+
+    def move_player(self, player, direction):
+        r,c = player.location
+        if direction == 'w':
+            #move player up
+            location = player.location
+            location[0] = location[0] - 1
+            player.location = location
+            #update grid square information
+            self.simple_map.grid[r][c].contains_player = False
+            self.simple_map.grid[r - 1][c].contains_player = True
+        if direction == 'd':
+            #move player right
+            location = player.location
+            location[1] = location[1] + 1
+            player.location = location
+            #update grid square information
+            self.simple_map.grid[r][c].contains_player = False
+            self.simple_map.grid[r][c + 1].contains_player = True
+        if direction == 's':
+            #move player down
+            location = player.location
+            location[0] = location[0] + 1
+            player.location = location
+            #update grid square information
+            self.simple_map.grid[r][c].contains_player = False
+            self.simple_map.grid[r + 1][c].contains_player = True
+        if direction == 'a':
+            #move player left
+            location = player.location
+            location[1] = location[1] - 1
+            player.location = location
+            #update grid square information
+            self.simple_map.grid[r][c].contains_player = False
+            self.simple_map.grid[r][c - 1].contains_player = True
+
+    def start_game(self):
+        self.simple_map.render()
+        turn = 0
+        while(1):
+            if(turn == 0):
+                curr_player = self.p1
+                print('player 1 turn')
+            else:
+                curr_player = self.p2
+                print('player 2 turn')
+            #until valid action taken
+                #prompt for valid input
+            action_taken_valid = False
+            while not action_taken_valid:
+                a = input()
+                if len(a) == 1:
+                    if a not in 'wasd':
+                        continue
+                    r,c = curr_player.location
+                    possible_moves = self.simple_map.grid[r][c].movement
+                    if a == 'w' and possible_moves[0]:
+                        self.move_player(curr_player, 'w')
+                        action_taken_valid = True
+                    if a == 'd' and possible_moves[1]:
+                        self.move_player(curr_player, 'd')
+                        action_taken_valid = True
+                    if a == 's' and possible_moves[2]:
+                        self.move_player(curr_player, 's')
+                        action_taken_valid = True
+                    if a == 'a' and possible_moves[3]:
+                        self.move_player(curr_player, 'a')
+                        action_taken_valid = True
 
 
-    def __str__(self):
-        output = ''
-        for x in self.grid:
-            line = ''
-            for y in x:
-                line += str(y)
-            output += line + '\n'
-        return output
+            self.simple_map.render()
 
-simple_map = Map(8)
-simple_map.render()
-simple_map.update_movement(3,3,[True,False,True,True])
-simple_map.update_movement(5,5,[True,False,False,True])
-simple_map.update_movement(4,5,[True,False,True,True])
-simple_map.render()
-
-simple_map.update_movement(1,1,[False,False,False,False])
-simple_map.render()
+new_game = Game()
+new_game.start_game()
