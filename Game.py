@@ -1,7 +1,12 @@
 from Player import Player
 from Map import Map
-import sys
 from RenderEngine import render
+import sys
+import re
+
+# pattern for matching wall placement format
+p = re.compile('\d{1}[,]{1}\d{1}[ ]{1}\d{1}[,]{1}\d{1}')
+
 class Game:
     def __init__(self):
         self.map = Map(8)
@@ -92,6 +97,7 @@ class Game:
             action_taken_valid = False
             while not action_taken_valid:
                 a = input()
+                # Character movement
                 if len(a) == 1:
                     if a not in 'wasd':
                         continue
@@ -109,6 +115,11 @@ class Game:
                     if a == 'a' and possible_moves[3]:
                         self.move_player(curr_player, 'a')
                         action_taken_valid = True
+                # Wall placement
+                # verifies input is in format num,num num,num
+                if p.match(a) is not None:
+                    print("ooga!")
+                    action_taken_valid = True
                 if a =='exit':
                     sys.exit()
 
