@@ -7,9 +7,9 @@ def render(map):
             for c in range(map.size):
                 print('%d '%c, end='')
             print()
-            print('  ', end='')
+            print(' ', end='')
             for c in range(map.size):
-                print('- ', end='')
+                print(' -', end='')
             print()
         if r >= 0 and r <= map.size - 1:
             # vertical bars | movement left and right
@@ -35,7 +35,7 @@ def render(map):
                 if cg_movement[2] == False:
                     print(' -', end='')
                 else:
-                    print(' ', end='')
+                    print('  ', end='')
                 if c == (map.size - 1):
                     print()
 

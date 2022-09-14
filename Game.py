@@ -60,7 +60,7 @@ class Game:
         while not valid_input:
             a = input()
             if a.isnumeric():
-                if int(a) not in range(self.map.size - 1):
+                if int(a) not in range(self.map.size):
                     print("Please enter a number from 0 - %d" % (self.map.size - 1))
                     continue
                 self.p1.set_location([0, int(a)])
@@ -73,7 +73,7 @@ class Game:
         while not valid_input:
             a = input()
             if a.isnumeric():
-                if int(a) not in range(self.map.size - 1):
+                if int(a) not in range(self.map.size):
                     print("Please enter a number from 0 - %d" % (self.map.size - 1))
                     continue
                 self.p2.set_location([self.map.size - 1, int(a)])
@@ -154,6 +154,6 @@ class Game:
 
             render(self.map)
 
-new_game = Game(8)
+new_game = Game(5)
 new_game.setup_game()
 new_game.start_game()
