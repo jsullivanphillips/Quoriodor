@@ -18,7 +18,7 @@ def render(map):
                 if c == 0:
                     print('%d|'%r, end='')
                 if map.grid[r][c].contains_player == True:
-                    print('O', end='')
+                    print(str(map.grid[r][c].contains_player_value), end='')
                 else:
                     print('*', end='')
                 if cg_movement[1] == True: #movement to the right
@@ -29,13 +29,13 @@ def render(map):
             for c in range(map.size):
                 # vertical movement, cross bars
                 # formatting spacer for last line
-                if r == map.size - 1 and c == 0:
-                    print(' ', end='')
                 cg_movement = map.grid[r][c].movement
+                if c == 0:
+                    print(' ', end='')
                 if cg_movement[2] == False:
                     print(' -', end='')
                 else:
-                    print('  ', end='')
+                    print(' ', end='')
                 if c == (map.size - 1):
                     print()
 
