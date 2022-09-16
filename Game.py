@@ -9,8 +9,8 @@ class Game:
     def __init__(self, map_size):
         self.map = Map(map_size)
         self.p = re.compile("[0-" + str(map_size - 1) + "][,]{1}[0-" + str(map_size - 1) + "][ ]{1}[0-" + str(map_size - 1) + "][,]{1}[0-" + str(map_size - 1) + "]")
-        self.p1 = Player(1)
-        self.p2 = Player(2)
+        self.p1 = Player(1, map_size - 1)
+        self.p2 = Player(2, map_size - 1)
 
 
     def move_player(self, player, direction):
@@ -92,11 +92,11 @@ class Game:
         while(1):
             if(turn%2 == 0):
                 curr_player = self.p1
-                print('player 1 turn')
+                print('player 1 turn. # of walls left', curr_player.num_walls)
                 turn += 1
             else:
                 curr_player = self.p2
-                print('player 2 turn')
+                print('player 2 turn. # of walls left', curr_player.num_walls)
                 turn += 1
 
             action_taken_valid = False
@@ -132,6 +132,9 @@ class Game:
                 # Wall placement
                 # verifies input is in format num,num num,num and within range of map
                 if self.p.match(a) is not None:
+                    if curr_player.num_walls == 0:
+                        print('You are out of walls!')
+                        continue
                     gs_list = re.findall(r'\d{1}[,]\d{1}', a)
                     gs_1 = re.findall(r'\d{1}',gs_list[0])
                     gs_2 = re.findall(r'\d{1}',gs_list[1])
@@ -139,13 +142,14 @@ class Game:
                         gs_1[i] = int(gs_1[i])
                         gs_2[i] = int(gs_2[i])
                     # Check if two blocks are different and next to each other
-                    #ra and ca reflect clockwise movement starting at up
+                    # ra and ca reflect clockwise movement starting at up
                     ra = [-1, 0, 1, 0]
                     ca = [0, 1, 0, -1]
                     for i in range(4):
                         if ((gs_1[0] + ra[i]) == gs_2[0]) and ((gs_1[1] + ca[i]) == gs_2[1]):
                             self.map.add_wall(gs_1, gs_2, i)
                             action_taken_valid = True
+                            curr_player.num_walls = curr_player.num_walls - 1
                     if not action_taken_valid:
                         print('Please enter two adjacent blocks with no existing wall between them. \nExample formatting: 0,0 0,1')
                 if a =='exit':
@@ -153,7 +157,17 @@ class Game:
 
 
             render(self.map)
+print("Enter a map size (between 4-10)")
+player_input = input()
+valid_map_size = False
+while not valid_map_size:
+    if player_input.isnumeric():
+        if int(player_input) not in range(4,11):
+            print("Enter a map size (between 4-10)")
+            player_input = input()
+        else:
+            valid_map_size = True
 
-new_game = Game(5)
+new_game = Game(int(player_input))
 new_game.setup_game()
 new_game.start_game()
